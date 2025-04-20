@@ -7,10 +7,10 @@ process COLLECT_MD5 {
         path("*.md5")
     
     output:
-        path("md5sum.txt")
+        path("${params.accession}-raw-fastq-md5sum.txt")
 
     script:
         """
-        cat *.md5 > md5sum.txt
+        cat *.md5 > ${params.accession}-raw-fastq-md5sum.txt
         """
 }
