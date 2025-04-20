@@ -1,5 +1,5 @@
 process COPY_READS {
-    tag "Sample: ${sample}"
+    tag "${sample}"
 
     publishDir "${ params.input_dir }/${ params.accession }",
         mode: params.publish_dir_mode

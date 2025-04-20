@@ -1,7 +1,7 @@
 process FASTQC {
   // memory and versioning adapted from https://github.com/nf-core/modules/blob/master/modules/nf-core/fastqc/main.nf
   // FastQC performed on reads
-  tag "Sample: ${ sample }"
+  tag "${ sample }"
 
     publishDir "${ params.input_dir }/${ params.accession }/FastQC_Reports",
         mode: params.publish_dir_mode,
@@ -12,7 +12,7 @@ process FASTQC {
 
   output:
     tuple val(sample), path("${ sample }*.html"), path("${ sample }*.zip"), emit: fastqc
-    path("${sample}_fastqc.log"), emit: log
+    tuple val(sample), path("${sample}_fastqc.log"), emit: log
     
 
   script:

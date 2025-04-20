@@ -59,7 +59,7 @@ Workflow Version: ${workflow.manifest.version}"""
 }
 
 
-include { gl_validate_raw_data } from './workflows/gl-validate-raw-data.nf'
+include { GL_VALIDATE_RAW_DATA } from './workflows/gl-validate-raw-data.nf'
 
 input_dir = params.input_dir ? Channel.fromPath(params.input_dir, checkIfExists: true) : null
 
@@ -79,7 +79,7 @@ md5_file = params.md5_file ? Channel.fromPath(params.md5_file) : null
 
 // Main workflows
 workflow {
-    gl_validate_raw_data(
+    GL_VALIDATE_RAW_DATA(
         input_dir,
         assay_suffix
     )

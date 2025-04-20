@@ -1,5 +1,5 @@
 process MULTIQC {
-    // tag("Dataset-wide")
+    tag("Dataset-wide")
     publishDir "${ params.input_dir }/${ params.accession }/MultiQC_Reports",
         mode: params.publish_dir_mode,
         pattern: "{*.html,*.zip}"
@@ -14,11 +14,11 @@ process MULTIQC {
     output:
     path("${ mqc_label }_multiqc${ assay_suffix }_data.zip"), emit: zipped_data
     path("${ mqc_label }_multiqc${ assay_suffix }.html"), emit: html
-    path("${params.accession}-${ mqc_label }-multiqc.log"), emit: log
+    path("${params.accession}-${ mqc_label }_multiqc.log"), emit: log
     
     script:
     def config_arg = multiqc_config.name != "NO_FILE" ? "--config ${ multiqc_config }" : ""
-    def log_file = "${params.accession}-${ mqc_label }-multiqc.log"
+    def log_file = "${params.accession}-${ mqc_label }_multiqc.log"
     """
     multiqc \\
         --force \\

@@ -7,6 +7,8 @@ include { COLLECT_MD5 } from '../modules/collect_md5.nf'
 include { GZIP_CHECK } from '../modules/gzip_check.nf'
 include { FASTQ_INFO } from '../modules/fastq_info.nf'
 include { SOFTWARE_VERSIONS } from '../modules/software_versions.nf'
+include { CONCAT_LOGS } from '../modules/concat_logs.nf'
+
 def parseSampleSheet(sample_sheet_ch) {
     sample_sheet_ch
         .splitCsv(header: true, sep: '\t')
@@ -23,7 +25,7 @@ def parseSampleSheet(sample_sheet_ch) {
 }
 
 
-workflow gl_validate_raw_data {
+workflow GL_VALIDATE_RAW_DATA {
     take:
         input_dir
         assay_suffix
@@ -63,6 +65,16 @@ workflow gl_validate_raw_data {
 
         // Check fastq format with fastq_info
         FASTQ_INFO(renamed_reads)
+
+
+        // Concatenate FastQC and MultiQC logs
+        CONCAT_LOGS(
+            FASTQC.out.log.map { meta, logfile -> logfile }
+            | collect
+            | map { it.sort() },
+            MULTIQC.out.log
+        )
+
 
         // Create software versions file
         SOFTWARE_VERSIONS()

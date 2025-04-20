@@ -1,5 +1,5 @@
 process MD5SUM {
-    tag "Sample: ${ sample }"
+    tag "${ sample }"
 
     // publishDir "${ params.input_dir }/${ params.GLDS_ID }/md5sum",
     //     mode: params.publish_dir_mode

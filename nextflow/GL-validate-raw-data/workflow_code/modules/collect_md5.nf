@@ -1,5 +1,4 @@
 process COLLECT_MD5 {
-    tag "Collecting md5sums"
 
     publishDir "${ params.input_dir }/${ params.accession }",
         mode: params.publish_dir_mode
