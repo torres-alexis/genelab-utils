@@ -42,7 +42,7 @@ ${colorCodes.c_bright_green}${colorCodes.c_line}${colorCodes.c_reset}
 Inputs:${colorCodes.c_reset}
   GLDS ID:          ${colorCodes.c_yellow}${params.accession}${colorCodes.c_reset}
   Assay:            ${colorCodes.c_yellow}${params.assay}${colorCodes.c_reset}
-  MD5 File:         ${colorCodes.c_yellow}${params.md5_file}${colorCodes.c_reset}
+  Reference MD5 File:    ${colorCodes.c_yellow}${params.reference_md5_file}${colorCodes.c_reset}
   HRremoved Suffix: ${colorCodes.c_yellow}${params.hrr}${colorCodes.c_reset}
   Input Dir:        ${colorCodes.c_yellow}${params.input_dir}${colorCodes.c_reset}
 

@@ -1,7 +1,7 @@
 process FASTQ_INFO {
     tag "${ sample }"
 
-    publishDir "${ params.input_dir }/${ params.accession }/Fastq_Info/${sample}",
+    publishDir "${ params.input_dir }/${ params.accession }/Fastq_Info/",
         mode: params.publish_dir_mode
 
     input:

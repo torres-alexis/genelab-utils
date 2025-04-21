@@ -2,7 +2,7 @@ name: genelab-validate-raw-2025-04-17
 channels:
   - conda-forge
   - bioconda
-  - defaults
+  - nodefault
 dependencies:
   - python=3.10
   - pandas=2.2.3

@@ -8,6 +8,7 @@ include { GZIP_CHECK } from '../modules/gzip_check.nf'
 include { FASTQ_INFO } from '../modules/fastq_info.nf'
 include { SOFTWARE_VERSIONS } from '../modules/software_versions.nf'
 include { CONCAT_LOGS } from '../modules/concat_logs.nf'
+include { SUMMARY_TABLE } from '../modules/summary_table.nf'
 
 def parseSampleSheet(sample_sheet_ch) {
     sample_sheet_ch
@@ -34,7 +35,10 @@ workflow GL_VALIDATE_RAW_DATA {
     main:
         // Read in the input directory and create a sample sheet
         //      Row: Sample, read1_path, [read2_path, read3_path, read4_path]
-        sample_sheet = CREATE_SAMPLE_SHEET(input_dir)
+        CREATE_SAMPLE_SHEET(input_dir)
+
+        sample_sheet = CREATE_SAMPLE_SHEET.out.sample_sheet
+
         parsed_samples = parseSampleSheet(sample_sheet)
 
 
@@ -79,7 +83,16 @@ workflow GL_VALIDATE_RAW_DATA {
         // Create software versions file
         SOFTWARE_VERSIONS()
 
-
+        // Create summary table
+        SUMMARY_TABLE(
+            sample_sheet,
+            renamed_reads | map{ it -> it[1] } | collect,
+            COLLECT_MD5.out.md5_file,
+            GZIP_CHECK.out.gzip_checks | map{ it -> it[1] } | collect,
+            FASTQ_INFO.out.fastq_info | map{ it -> it[1] } | collect,
+            MULTIQC.out.zipped_data,
+            Channel.of(params.reference_md5_file ?: file("PLACEHOLDER"))
+        )
 
     emit:
         parsed_samples
