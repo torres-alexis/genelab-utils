@@ -1,5 +1,4 @@
 process CREATE_SAMPLE_SHEET {
-    tag("Dataset-wide")
     publishDir "${ params.input_dir }/${ params.accession }",
         mode: params.publish_dir_mode
 

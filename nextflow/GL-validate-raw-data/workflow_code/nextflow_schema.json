@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/GeneLab Raw Data Validation Pipeline//nextflow_schema.json",
+  "title": "GeneLab Raw Data Validation Pipeline pipeline parameters",
+  "description": "Nextflow workflow for validating GeneLab raw sequencing data (GL-validate-raw-data).",
+  "type": "object",
+  "$defs": {
+      "generic_options": {
+          "title": "Generic options",
+          "type": "object",
+          "fa_icon": "fas fa-file-import",
+          "description": "Less common options for the pipeline, typically set in a config file.",
+          "help_text": "These options are common to all nf-core pipelines and allow you to customise some of the core preferences for how the pipeline runs.\n\nTypically these options would be set in a Nextflow config file loaded for all pipeline runs, such as `~/.nextflow/config`.",
+          "properties": {
+              "version": {
+                  "type": "boolean",
+                  "description": "Display version and exit.",
+                  "fa_icon": "fas fa-question-circle",
+                  "hidden": true
+              }
+          }
+      }
+  },
+  "allOf": [
+      {
+          "$ref": "#/$defs/generic_options"
+      }
+  ],
+  "properties": {
+      "email": {
+          "type": "string",
+          "hidden": true
+      },
+      "multiqc_config": {
+          "type": "string",
+          "default": "/home/alexis/git/genelab-utils/nextflow/GL-validate-raw-data/workflow_code/conf/multiqc.config",
+          "hidden": true
+      },
+      "publish_dir_mode": {
+          "type": "string",
+          "default": "link",
+          "hidden": true
+      },
+      "input_dir": {
+          "type": "string",
+          "description": "Input directory containing all reads"
+      },
+      "accession": {
+          "type": "string",
+          "description": "GLDS ID, used to lname output directory, label files"
+      },
+      "assay": {
+          "type": "string",
+          "enum": [
+              "AmpSeq",
+              "bulkRNAseq",
+              "metabolomics",
+              "metagenomics",
+              "metatranscriptomics",
+              "MethylSeq",
+              "microarray",
+              "nanoporeRNAseq",
+              "proteomics",
+              "scATACseq",
+              "scRNAseq",
+              "smallRNAseq",
+              "snATACseq",
+              "snRNAseq",
+              "ST",
+              "targetNanoporeDNASeq",
+              "targetSeq",
+              "targetRNAseq",
+              "WGS"
+          ],
+          "description": "Assay type. See main.nf, line 4 for options"
+      },
+      "hrr": {
+          "type": "boolean",
+          "description": "Use HRR file suffix rather than the default"
+      },
+      "reference_md5_file": {
+          "type": "string",
+          "description": "Optional reference md5 file, used for md5sum validation"
+      }
+  },
+  "required": [
+      "input_dir",
+      "accession",
+      "assay"
+  ]
+}

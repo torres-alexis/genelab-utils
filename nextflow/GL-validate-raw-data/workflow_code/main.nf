@@ -65,7 +65,6 @@ input_dir = params.input_dir ? Channel.fromPath(params.input_dir, checkIfExists:
 
 ch_accession = params.accession ? Channel.value(params.accession) : null
 assay = params.assay ? Channel.value(params.assay) : null
-files_per_sample = params.files_per_sample ? Channel.value(params.files_per_sample) : null
 
 
 // Lookup the suffix
@@ -75,7 +74,6 @@ assay_suffix = params.assay ? assay_suffixes[params.assay] : null
 
 // To do
 
-md5_file = params.md5_file ? Channel.fromPath(params.md5_file) : null
 
 // Main workflows
 workflow {
