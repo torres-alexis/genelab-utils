@@ -10,6 +10,8 @@ process CREATE_SAMPLE_SHEET {
 
     script:
     """
-    create_sample_sheet.py $input_dir
+    create_sample_sheet.py \
+    --input_dir ${input_dir} \
+    --files_per_sample ${params.files_per_sample}
     """
 }

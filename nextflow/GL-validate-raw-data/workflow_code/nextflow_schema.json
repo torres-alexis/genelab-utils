@@ -5,28 +5,88 @@
   "description": "Nextflow workflow for validating GeneLab raw sequencing data (GL-validate-raw-data).",
   "type": "object",
   "$defs": {
-      "generic_options": {
-          "title": "Generic options",
+      "input_output_options": {
+          "title": "Input/Output Options",
           "type": "object",
           "fa_icon": "fas fa-file-import",
-          "description": "Less common options for the pipeline, typically set in a config file.",
+          "description": "Run settings",
           "help_text": "These options are common to all nf-core pipelines and allow you to customise some of the core preferences for how the pipeline runs.\n\nTypically these options would be set in a Nextflow config file loaded for all pipeline runs, such as `~/.nextflow/config`.",
           "properties": {
-              "version": {
+              "assay": {
+                  "type": "string",
+                  "enum": [
+                      "AmpSeq",
+                      "bulkRNAseq",
+                      "metabolomics",
+                      "metagenomics",
+                      "metatranscriptomics",
+                      "MethylSeq",
+                      "microarray",
+                      "nanoporeRNAseq",
+                      "proteomics",
+                      "scATACseq",
+                      "scRNAseq",
+                      "smallRNAseq",
+                      "snATACseq",
+                      "snRNAseq",
+                      "ST",
+                      "targetNanoporeDNASeq",
+                      "targetSeq",
+                      "targetRNAseq",
+                      "WGS"
+                  ],
+                  "description": "Assay type. See main.nf, line 4 for options"
+              },
+              "single_cell": {
                   "type": "boolean",
-                  "description": "Display version and exit.",
-                  "fa_icon": "fas fa-question-circle",
-                  "hidden": true
+                  "description": "Set this flag if the data are single-cell (requires reads_per_sample to be set to 3 or 4)."
+              },
+              "atacseq": {
+                  "type": "boolean",
+                  "description": "Set this flag if the data are ATACseq (expects R1, R2, R3 files per sample, with R1/R3 as paired reads)."
+              },
+              "input_dir": {
+                  "type": "string",
+                  "description": "Input directory containing all reads"
+              },
+              "accession": {
+                  "type": "string",
+                  "description": "GLDS ID, used to lname output directory, label files"
+              },
+              "hrr": {
+                  "type": "boolean",
+                  "description": "Use HRR file suffix rather than the default"
+              },
+              "reference_md5_file": {
+                  "type": "string",
+                  "description": "Optional reference md5 file, used for md5sum validation"
+              },
+              "files_per_sample": {
+                  "type": "integer",
+                  "default": 2,
+                  "description": "Expected number of read files per sample."
               }
-          }
+          },
+          "required": [
+              "assay",
+              "input_dir",
+              "accession",
+              "files_per_sample"
+          ]
       }
   },
   "allOf": [
       {
-          "$ref": "#/$defs/generic_options"
+          "$ref": "#/$defs/input_output_options"
       }
   ],
   "properties": {
+      "version": {
+          "type": "boolean",
+          "description": "Display version and exit.",
+          "fa_icon": "fas fa-question-circle",
+          "hidden": true
+      },
       "email": {
           "type": "string",
           "hidden": true
@@ -40,52 +100,6 @@
           "type": "string",
           "default": "link",
           "hidden": true
-      },
-      "input_dir": {
-          "type": "string",
-          "description": "Input directory containing all reads"
-      },
-      "accession": {
-          "type": "string",
-          "description": "GLDS ID, used to lname output directory, label files"
-      },
-      "assay": {
-          "type": "string",
-          "enum": [
-              "AmpSeq",
-              "bulkRNAseq",
-              "metabolomics",
-              "metagenomics",
-              "metatranscriptomics",
-              "MethylSeq",
-              "microarray",
-              "nanoporeRNAseq",
-              "proteomics",
-              "scATACseq",
-              "scRNAseq",
-              "smallRNAseq",
-              "snATACseq",
-              "snRNAseq",
-              "ST",
-              "targetNanoporeDNASeq",
-              "targetSeq",
-              "targetRNAseq",
-              "WGS"
-          ],
-          "description": "Assay type. See main.nf, line 4 for options"
-      },
-      "hrr": {
-          "type": "boolean",
-          "description": "Use HRR file suffix rather than the default"
-      },
-      "reference_md5_file": {
-          "type": "string",
-          "description": "Optional reference md5 file, used for md5sum validation"
       }
-  },
-  "required": [
-      "input_dir",
-      "accession",
-      "assay"
-  ]
+  }
 }
