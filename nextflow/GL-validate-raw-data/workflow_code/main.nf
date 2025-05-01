@@ -70,10 +70,12 @@ assay = params.assay ? Channel.value(params.assay) : null
 // Lookup the suffix
 assay_suffix = params.assay ? assay_suffixes[params.assay] : null
 
-
-
-// To do
-
+// For ATACseq or single-cell runs, require 3 or 4 files per sample
+if (params.atacseq || params.single_cell) {
+    if (params.files_per_sample != 3 && params.files_per_sample != 4) {
+        error "Expected 3 or 4 files per sample for ATAC-seq or single-cell RNA-seq, but user entered ${params.files_per_sample}."
+    }
+}
 
 // Main workflows
 workflow {
