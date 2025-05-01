@@ -35,6 +35,7 @@ nextflow run /home/alexis/git/genelab-utils/nextflow/GL-validate-raw-data/workfl
   --input_dir GLDS-423-raw-reads/ \
   --accession GLDS-423 \
   --assay bulkRNAseq \
+  --files_per_sample 2 \
   --reference_md5_file GLDS-#-raw-fastq-md5sum.txt
 ```
 
@@ -47,6 +48,7 @@ nextflow run /home/alexis/git/genelab-utils/nextflow/GL-validate-raw-data/workfl
 - `--input_dir`: Directory with raw data fastq.gz files
 - `--accession`: GLDS ID (e.g. GLDS-423, GLDS-PE-test)
 - `--assay`: Assay type (e.g. AmpSeq, bulkRNAseq, etc, see [main.nf](./workflow_code/main.nf))
+- `--files_per_sample`: Number of read files expected per sample. Will break workflow on sample sheet generation process 'CREATE_SAMPLE_SHEET' if there is a mismatch. (Default: 2)
 - `--reference_md5_file`: (Optional) Reference md5 file for md5sum validation
 
 Outputs and logs will be written to `${input_dir}/${accession}`.
