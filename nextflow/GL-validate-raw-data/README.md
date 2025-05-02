@@ -60,10 +60,10 @@ nextflow run /path/to/genelab-utils/nextflow/GL-validate-raw-data/workflow_code/
 The workflow automatically checks paired read files for format consistency. The logic is:
 
 - **Default (Paired-End, files_per_sample=2):** Paired check is performed between R1 and R2 for each sample.
-- **ATACseq (`--atacseq`):**
+- **ATACseq (`--atacseq true`):**
   - If `--files_per_sample 3` or `4`: Paired check is performed between R1 and R3 for each sample (R2 and R4 are not paired-checked; R2 is typically barcodes, R4 is ignored for pairing).
   - Any other value for `--files_per_sample` will cause the workflow to error.
-- **Single-cell (`--single_cell`):**
+- **Single-cell (`--single_cell true`):**
   - If `--files_per_sample 3`: Paired check is performed between R1 and R3 for each sample.
   - If `--files_per_sample 4`: No paired check is performed (all reads are checked individually).
 
