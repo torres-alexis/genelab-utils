@@ -69,7 +69,7 @@ The workflow automatically checks paired read files for format consistency. The 
 
 The summary table output will include a `paired_fastq_format_check` column reflecting the result of the relevant paired check for each sample, or will be empty if not applicable.
 
-Outputs and logs will be written to `${input_dir}/${accession}`.
+Outputs will be written to `${input_dir}/${accession}`. 
 
 ## Output
 
