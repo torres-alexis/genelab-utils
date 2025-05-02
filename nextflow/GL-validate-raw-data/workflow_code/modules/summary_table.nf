@@ -16,12 +16,11 @@ process SUMMARY_TABLE {
         path("${params.accession}-raw-validation-summary.tsv")
 
     script:
-        """
-        ref_md5_arg=""
-        if [ "\$(basename ${reference_md5})" != "PLACEHOLDER" ]; then
-            ref_md5_arg="--reference_md5 ${reference_md5}"
-        fi
+        def atacseq_flag = params.atacseq ? '--atacseq' : ''
+        def single_cell_flag = params.single_cell ? '--single_cell' : ''
+        def ref_md5_flag = reference_md5.getName() != 'PLACEHOLDER' ? "--reference_md5 ${reference_md5}" : ''
 
+        """
         create_summary_table.py \
           --sample_sheet ${sample_sheet} \
           --accession ${params.accession} \
@@ -30,6 +29,9 @@ process SUMMARY_TABLE {
           --fastq_info_dir Fastq_Info/ \
           --md5 ${md5_file} \
           --multiqc_data_zip ${multiqc_data_zip} \
-          \$ref_md5_arg
+          --files_per_sample ${params.files_per_sample} \
+          ${atacseq_flag} \
+          ${single_cell_flag} \
+          ${ref_md5_flag}
         """
 }

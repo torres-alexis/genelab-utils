@@ -30,7 +30,7 @@
 ## Usage Example
 
 ```bash
-nextflow run /home/alexis/git/genelab-utils/nextflow/GL-validate-raw-data/workflow_code/main.nf \
+nextflow run /path/to/genelab-utils/nextflow/GL-validate-raw-data/workflow_code/main.nf \
   -profile conda,slurm \
   --input_dir GLDS-423-raw-reads/ \
   --accession GLDS-423 \
@@ -45,11 +45,29 @@ nextflow run /home/alexis/git/genelab-utils/nextflow/GL-validate-raw-data/workfl
 **Parameter Definitions:**
 
 - `-profile`: Nextflow profiles to load, used to set up execution environment (see above)
-- `--input_dir`: Directory with raw data fastq.gz files
-- `--accession`: GLDS ID (e.g. GLDS-423, GLDS-PE-test)
-- `--assay`: Assay type (e.g. AmpSeq, bulkRNAseq, etc, see [main.nf](./workflow_code/main.nf))
-- `--files_per_sample`: Number of read files expected per sample. Will break workflow on sample sheet generation process 'CREATE_SAMPLE_SHEET' if there is a mismatch. (Default: 2)
-- `--reference_md5_file`: (Optional) Reference md5 file for md5sum validation
+- `--input_dir`: Path - Directory with raw data fastq.gz files
+- `--accession`: String - GLDS ID (e.g. GLDS-423, GLDS-PE-test)
+- `--assay`: String - Assay type. Must be one of:
+  AmpSeq, bulkRNAseq, metabolomics, metagenomics, metatranscriptomics, MethylSeq, microarray, nanoporeRNAseq, proteomics, scATACseq, scRNAseq, smallRNAseq, snATACseq, snRNAseq, ST, targetNanoporeDNASeq, targetSeq, targetRNAseq, WGS
+  (see [main.nf](./workflow_code/main.nf) for details)
+- `--files_per_sample`: Integer - Number of read files expected per sample. Should be 1-4. Will break workflow on sample sheet generation process 'CREATE_SAMPLE_SHEET' if there is a mismatch. (Default: 0 / breaks workflow)
+- `--reference_md5_file`: Path - (Optional) Reference md5 file for md5sum validation
+- `--atacseq`: Boolean - Set if the data are ATACseq. Requires 3 or 4 files per sample (`--files_per_sample 3` or `4`)
+- `--single_cell`: Boolean - Set if the data are single-cell. Requires 3 or 4 files per sample (`--files_per_sample 3` or `4`)
+
+## Paired Read File Checking Logic
+
+The workflow automatically checks paired read files for format consistency. The logic is:
+
+- **Default (Paired-End, files_per_sample=2):** Paired check is performed between R1 and R2 for each sample.
+- **ATACseq (`--atacseq`):**
+  - If `--files_per_sample 3` or `4`: Paired check is performed between R1 and R3 for each sample (R2 and R4 are not paired-checked; R2 is typically barcodes, R4 is ignored for pairing).
+  - Any other value for `--files_per_sample` will cause the workflow to error.
+- **Single-cell (`--single_cell`):**
+  - If `--files_per_sample 3`: Paired check is performed between R1 and R3 for each sample.
+  - If `--files_per_sample 4`: No paired check is performed (all reads are checked individually).
+
+The summary table output will include a `paired_fastq_format_check` column reflecting the result of the relevant paired check for each sample, or will be empty if not applicable.
 
 Outputs and logs will be written to `${input_dir}/${accession}`.
 

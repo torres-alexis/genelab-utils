@@ -59,21 +59,20 @@ def get_fastq_checks(sample, new_filenames, fastq_info_dir):
             results.append('')
     return results
 
-def get_paired_fastq_check(sample, num_reads, fastq_info_dir):
-    if num_reads == 2:
-        check_file = os.path.join(fastq_info_dir, f"{sample}_paired.fastq_info")
-    elif num_reads == 3:
+def get_paired_fastq_check(sample, fastq_info_dir, atacseq=False, single_cell=False, files_per_sample=0):
+    if atacseq:
         check_file = os.path.join(fastq_info_dir, f"{sample}_paired_R1_R3.fastq_info")
+    elif single_cell:
+        if files_per_sample == 3:
+            check_file = os.path.join(fastq_info_dir, f"{sample}_paired_R1_R3.fastq_info")
+        else:
+            # No paired check for 4-file single-cell
+            return ''
     else:
-        print(f"[DEBUG] No paired check for sample={sample}, num_reads={num_reads}")
-        return ''
-    print(f"[DEBUG] Looking for paired check file: {check_file}")
+        check_file = os.path.join(fastq_info_dir, f"{sample}_paired.fastq_info")
     if os.path.exists(check_file):
         with open(check_file) as f:
-            val = f.read().strip()
-            print(f"[DEBUG] Found paired check file for {sample}: {val}")
-            return val
-    print(f"[DEBUG] Paired check file not found for {sample}")
+            return f.read().strip()
     return ''
 
 def extract_num_reads_from_multiqc(multiqc_zip_path, sample_ids, num_reads):
@@ -181,6 +180,9 @@ def main():
     parser.add_argument('--md5', required=True)
     parser.add_argument('--multiqc_data_zip', required=True)
     parser.add_argument('--reference_md5', required=False)
+    parser.add_argument('--atacseq', action='store_true', default=False)
+    parser.add_argument('--single_cell', action='store_true', default=False)
+    parser.add_argument('--files_per_sample', type=int, default=0)
     args = parser.parse_args()
 
     out_file = f"{args.accession}-raw-validation-summary.tsv"
@@ -231,12 +233,14 @@ def main():
     elif len(read_cols) == 4:
         out_header.append('R1_R2_R3_and_R4_read_lengths_equal')
     out_header.append('num_fastqc_reports_in_multiqc_report')
-    if len(read_cols) == 2:
-        out_header += ['R1_md5_check', 'R2_md5_check']
-    elif len(read_cols) == 3:
-        out_header += ['R1_md5_check', 'R2_md5_check', 'R3_md5_check']
-    elif len(read_cols) == 4:
-        out_header += ['R1_md5_check', 'R2_md5_check', 'R3_md5_check', 'R4_md5_check']
+    # Only add md5_check columns if reference md5 is provided
+    if ref_md5_map:
+        if len(read_cols) == 2:
+            out_header += ['R1_md5_check', 'R2_md5_check']
+        elif len(read_cols) == 3:
+            out_header += ['R1_md5_check', 'R2_md5_check', 'R3_md5_check']
+        elif len(read_cols) == 4:
+            out_header += ['R1_md5_check', 'R2_md5_check', 'R3_md5_check', 'R4_md5_check']
 
     # Extract num_reads, read_length_ranges, avg_read_lengths, num_fastqc_reports from multiqc zip
     sample_ids = [row['Sample Name'] for row in rows]
@@ -257,7 +261,13 @@ def main():
             R_md5s = [md5_map.get(nf, '') if nf else '' for nf in new_filenames]
             R_gzip_tests = get_gzip_check(new_filenames, args.gzip_dir)
             R_fastq_checks = get_fastq_checks(unique_id, new_filenames, args.fastq_info_dir)
-            paired_fastq_check = get_paired_fastq_check(unique_id, num_reads, args.fastq_info_dir)
+            paired_fastq_check = get_paired_fastq_check(
+                unique_id,
+                args.fastq_info_dir,
+                atacseq=args.atacseq,
+                single_cell=args.single_cell,
+                files_per_sample=args.files_per_sample
+            )
             RX_num_reads = num_reads_dict.get(unique_id, ['']*num_reads)
             RX_length_ranges = length_range_dict.get(unique_id, ['']*num_reads)
             RX_avg_lengths = avg_length_dict.get(unique_id, ['']*num_reads)
