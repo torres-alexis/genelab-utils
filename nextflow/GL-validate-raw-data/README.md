@@ -9,7 +9,7 @@
 5. Generate md5sums for all files
 6. Check gzip integrity
 7. Check fastq format
-8. Concatenate logs
+8. Concatenate md5sums
 9. Record software versions
 10. (Optional) Validate computed md5sums against a provided reference md5 file.
 10. Generate summary table with all results
@@ -73,7 +73,7 @@ Outputs will be written to `${input_dir}/${accession}`.
 
 ## Output
 
-- All results, logs, and summary tables are written to `${input_dir}/${accession}/`
+- All results are written to `${input_dir}/${accession}/`
 - Key output files:
   - **GLDS-#-raw-validation-summary.tsv**: Main summary table with all QC and md5 results
   - **GLDS-#-raw-fastq-md5sum_[assay suffix].txt**: md5sums for all processed files
